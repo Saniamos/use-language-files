@@ -1,8 +1,10 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "use",
+	"name": "soil",
 	"patterns": [
-		{"include": "#basictypes"},
+		{
+			"include": "#types"
+		},
 		{
 			"include": "#keywords"
 		},
@@ -14,48 +16,71 @@
 		}
 	],
 	"repository": {
-		"basictypes": {
+		"types-basic-number": {
 			"patterns": [
 				{
 					"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
-					"name": "constant.numeric.float.use"
+					"name": "constant.numeric.float.soil"
 				},
 				{
 					"match": "\\b([0-9]+)\\b",
-					"name": "constant.numeric.integer.use"
-				},
+					"name": "constant.numeric.integer.soil"
+				}
+			]
+		},
+		"types-basic-string": {
+			"patterns": [
 				{
 					"begin": "'",
 					"end": "'",
-					"name": "string.quoted.single.use"
+					"name": "string.quoted.single.soil"
 				},
 				{
 					"begin": "\"",
 					"end": "\"",
-					"name": "string.quoted.double.use"
-				},
-				{
-					"name": "entity.name.type.use",
-					"match": "\\b(Sequence|Set|Bag|String|Integer)\\b"
-				},
-				{
-					"name": "entity.name.type.enum",
-					"match": "#\\b\\w+?\\b"
+					"name": "string.quoted.double.soil"
 				}
+			]
+		},
+		"types-basic-enum-entry": {
+			"name": "variable.other.enummember",
+			"match": "#\\b\\w+?\\b"
+		},
+		"types-collection": {
+			"begin": "\\b(Sequence|Set|Bag|)\\b\\{",
+			"beginCaptures": {"1": "entity.name.type"},
+			"end": "\\}",
+			"patterns":
+				[{"include": "#types"}]
+		},
+		"types": {
+			"patterns": [
+				{"include":"#types-basic-number"},
+				{"include":"#types-basic-string"},
+				{"include":"#types-basic-enum-entry"},
+				{"include":"#types-collection"}
 			]
 		},
 		"expressions": {
 			"patterns": [
 				{
-					"name": "keyword.control.use",
+					"name": "keyword.control.soil",
 					"match": "!\\b\\w+?\\b"
+				},
+				{
+					"begin": "\\b(\\w+?)\\W*?:=\\W*?",
+					"beginCaptures": {"1": "entity.name.variable.soil"},
+					"end": "$|;",
+					"patterns": [
+						{"include": "#types"}
+					]
 				}
 			]
 		},
 		"keywords": {
 			"patterns": [
 				{
-					"name": "keyword.control.use",
+					"name": "keyword.control.soil",
 					"match": "\\b(between)\\b"
 				}
 			]
@@ -63,7 +88,7 @@
 		"comments": {
 			"begin": "--",
 			"end": "$",
-			"name": "comment.line.double-dash.use"
+			"name": "comment.line.double-dash.soil"
 		}
 	},
 	"scopeName": "source.javascript"

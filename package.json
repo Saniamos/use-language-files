@@ -14,12 +14,12 @@
             "id": "use",
             "aliases": ["use", "use"],
             "extensions": [".use"],
-            "configuration": "./syntaxes/use.language-configuration.json"
+            "configuration": "./language-configuration.json"
         },{
             "id": "soil",
             "aliases": ["soil", "soil"],
             "extensions": [".cmd"],
-            "configuration": "./syntaxes/soil.language-configuration.json"
+            "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "use",
@@ -27,7 +27,7 @@
             "path": "./syntaxes/use.tmLanguage.json"
         },{
             "language": "soil",
-            "scopeName": "source.javascript",
+            "scopeName": "source.coffeescript",
             "path": "./syntaxes/soil.tmLanguage.json"
         }]
     }

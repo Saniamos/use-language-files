@@ -9,14 +9,12 @@
 			"include": "#comments"
 		},
 		{
-			"include": "#basictypes"
-		},
-		{
 			"include": "#expressions"
-		}
+		},
+		{"include": "#function-declaration"}
 	],
 	"repository": {
-		"basictypes": {
+		"types-basic-number": {
 			"patterns": [
 				{
 					"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
@@ -25,7 +23,11 @@
 				{
 					"match": "\\b([0-9]+)\\b",
 					"name": "constant.numeric.integer.use"
-				},
+				}
+			]
+		},
+		"types-basic-string": {
+			"patterns": [
 				{
 					"begin": "'",
 					"end": "'",
@@ -35,45 +37,54 @@
 					"begin": "\"",
 					"end": "\"",
 					"name": "string.quoted.double.use"
-				},
-				{
-					"name": "entity.name.type.use",
-					"match": "\\b(Sequence|Set|Bag|String|Integer)\\b"
-				},
-				{
-					"name": "entity.name.type.enum",
-					"match": "#\\b\\w+?\\b"
 				}
 			]
 		},
-		"function-params-declaration": {
-			"match": "\\b(\\w+?)\\b\\W*?:\\W*?\\b(\\w+?)\\b",
-			"captures": {
-				"1": {
-					"name": "entity.name.variable.use"
-				},
-				"2": {
-					"name": "entity.name.type.use"
-				}
-			}
+		"types-basic-enum-entry": {
+			"name": "variable.other.enummember",
+			"match": "#\\b\\w+?\\b"
 		},
-		"function-call": {
-			"comment": "function call",
-			"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+		"types-collection": {
+			"begin": "\\b(Sequence|Set|Bag|)\\b\\{",
 			"beginCaptures": {
-				"1": {
-					"name": "entity.name.function"
-				}
+				"1": "entity.name.type"
 			},
-			"end": "\\)",
+			"end": "\\}",
 			"patterns": [
 				{
-					"include": "#function-call"
+					"include": "#types"
 				}
 			]
 		},
-		"expressions": {
+		"types": {
 			"patterns": [
+				{
+					"include": "#types-basic-number"
+				},
+				{
+					"include": "#types-basic-string"
+				},
+				{
+					"include": "#types-basic-enum-entry"
+				},
+				{
+					"include": "#types-collection"
+				}
+			]
+		},
+		"expressions-nonnestable": {
+			"patterns": [
+				{
+					"include": "#types"
+				},
+				{
+					"begin": "\\b(\\w+?)\\W*?:=\\W*?",
+					"beginCaptures": {"1": "entity.name.variable.use"},
+					"end": "$|;",
+					"patterns": [
+						{"include": "#types"}
+					]
+				},
 				{
 					"comment": "declare",
 					"match": "\\b(declare)\\s*?(\\S+?)\\s*?:\\s*?(\\S+?)\\b",
@@ -97,9 +108,13 @@
 							"name": "entity.name.class"
 						}
 					}
-				},
+				}
+			]
+		},
+		"expressions-nestable": {
+			"patterns": [
 				{
-					"comment": "function declaration",
+					"comment": "function call",
 					"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
 					"beginCaptures": {
 						"1": {
@@ -109,12 +124,38 @@
 					"end": "\\)",
 					"patterns": [
 						{
-							"include": "#function-params-declaration"
+							"include": "#expressions-nestable"
 						},
 						{
-							"include": "#function-call"
+							"include": "#expressions-nonnestable"
 						}
 					]
+				}
+			]
+		},
+		"function-params-declaration": {
+			"match": "\\b(\\w+?)\\b\\W*?:\\W*?\\b(\\w+?)\\b",
+			"captures": {
+				"1": {
+					"name": "entity.name.variable.use"
+				},
+				"2": {
+					"name": "entity.name.type.use"
+				}
+			}
+		},
+		"function-declaration": {
+			"comment": "function declaration",
+			"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.name.function"
+				}
+			},
+			"end": "\\)",
+			"patterns": [
+				{
+					"include": "#function-params-declaration"
 				}
 			]
 		},

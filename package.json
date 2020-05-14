@@ -1,0 +1,25 @@
+{
+    "name": "use-lang",
+    "displayName": "use-lang",
+    "description": "Language Support for USE (Uni Bremen)",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.45.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "use",
+            "aliases": ["use", "use"],
+            "extensions": [".use"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "use",
+            "scopeName": "source.javascript",
+            "path": "./syntaxes/use.tmLanguage.json"
+        }]
+    }
+}

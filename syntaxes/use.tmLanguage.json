@@ -1,0 +1,87 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "use",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#basictypes"
+		},
+		{"include": "#expressions"}
+	],
+	"repository": {
+		"basictypes": {
+			"patterns":[{
+			"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
+			"name": "constant.numeric.float.use"
+		  },
+		  {
+			"match": "\\b([0-9]+)\\b",
+			"name": "constant.numeric.integer.use"
+		  },
+		  {
+			  "begin": "'",
+			  "end": "'",
+			  "name": "string.quoted.single.use"
+		  },
+		  {
+			  "begin": "\"",
+			  "end": "\"",
+			  "name": "string.quoted.double.use"
+		  } ,{
+			"name": "entity.name.type.use",
+			"match": "\\b(Sequence|Set|Bag|String|Integer)\\b"
+			},{
+				"match": "\\(.*?:\\W*?\\b(\\.+?)\\b\\)",
+				"captures": {"1": {"name":"entity.name.type.use"}}
+				}
+		]
+		},
+		"expressions": {
+			"patterns": [
+				{
+					"comment": "declare",
+					"match": "\\b(declare)\\s*?(\\S+?)\\s*?:\\s*?(\\S+?)\\b",
+				"captures": {"1": {"name":"keyword.control.use"},
+				"3": {"name":"entity.name.type.use"}}
+				},
+				{"comment":"class instantiation",
+				"match": "(new)\\s+?([A-Z]\\S*?)\\b",
+				"captures": {"1": {"name":"keyword.control.use"}, "2": {"name":"entity.name.class"}}
+				},
+				{"comment":"function call",
+				"match": "\\b([_\\-a-z][_\\-a-zA-Z0-9]+?)\\s*?\\(",
+				"captures": {"1": {"name":"entity.name.function"}}
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.use",
+				"match": "\\b(begin|end|pre|post|between)\\b"
+			},{
+				"name": "keyword.class.use",
+				"match": "\\b(abstract|class|associationclass|enum)\\b"
+			},{
+				"name": "keyword.class.use",
+				"match": "->"
+			},{
+				"name": "variable.other.readwrite",
+				"match": "\\b(self)\\b"
+			},{
+				"name": "variable.other.property.use",
+				"match": "\\b(attributes|operations|constraints|statemachines)\\b"
+			}]
+		},
+		"comments": {
+			"begin": "--",
+			"end": "$",
+			"name": "comment.line.double-dash.use"
+		  }
+	},
+	"scopeName": "source.javascript"
+}

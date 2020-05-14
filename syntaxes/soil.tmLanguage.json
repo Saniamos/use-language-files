@@ -1,0 +1,70 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "use",
+	"patterns": [
+		{"include": "#basictypes"},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#expressions"
+		}
+	],
+	"repository": {
+		"basictypes": {
+			"patterns": [
+				{
+					"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
+					"name": "constant.numeric.float.use"
+				},
+				{
+					"match": "\\b([0-9]+)\\b",
+					"name": "constant.numeric.integer.use"
+				},
+				{
+					"begin": "'",
+					"end": "'",
+					"name": "string.quoted.single.use"
+				},
+				{
+					"begin": "\"",
+					"end": "\"",
+					"name": "string.quoted.double.use"
+				},
+				{
+					"name": "entity.name.type.use",
+					"match": "\\b(Sequence|Set|Bag|String|Integer)\\b"
+				},
+				{
+					"name": "entity.name.type.enum",
+					"match": "#\\b\\w+?\\b"
+				}
+			]
+		},
+		"expressions": {
+			"patterns": [
+				{
+					"name": "keyword.control.use",
+					"match": "!\\b\\w+?\\b"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.use",
+					"match": "\\b(between)\\b"
+				}
+			]
+		},
+		"comments": {
+			"begin": "--",
+			"end": "$",
+			"name": "comment.line.double-dash.use"
+		}
+	},
+	"scopeName": "source.javascript"
+}

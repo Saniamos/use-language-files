@@ -11,77 +11,142 @@
 		{
 			"include": "#basictypes"
 		},
-		{"include": "#expressions"}
+		{
+			"include": "#expressions"
+		}
 	],
 	"repository": {
 		"basictypes": {
-			"patterns":[{
-			"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
-			"name": "constant.numeric.float.use"
-		  },
-		  {
-			"match": "\\b([0-9]+)\\b",
-			"name": "constant.numeric.integer.use"
-		  },
-		  {
-			  "begin": "'",
-			  "end": "'",
-			  "name": "string.quoted.single.use"
-		  },
-		  {
-			  "begin": "\"",
-			  "end": "\"",
-			  "name": "string.quoted.double.use"
-		  } ,{
-			"name": "entity.name.type.use",
-			"match": "\\b(Sequence|Set|Bag|String|Integer)\\b"
-			},{
-				"match": "\\(.*?:\\W*?\\b(\\.+?)\\b\\)",
-				"captures": {"1": {"name":"entity.name.type.use"}}
+			"patterns": [
+				{
+					"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
+					"name": "constant.numeric.float.use"
+				},
+				{
+					"match": "\\b([0-9]+)\\b",
+					"name": "constant.numeric.integer.use"
+				},
+				{
+					"begin": "'",
+					"end": "'",
+					"name": "string.quoted.single.use"
+				},
+				{
+					"begin": "\"",
+					"end": "\"",
+					"name": "string.quoted.double.use"
+				},
+				{
+					"name": "entity.name.type.use",
+					"match": "\\b(Sequence|Set|Bag|String|Integer)\\b"
+				},
+				{
+					"name": "entity.name.type.enum",
+					"match": "#\\b\\w+?\\b"
 				}
-		]
+			]
+		},
+		"function-params-declaration": {
+			"match": "\\b(\\w+?)\\b\\W*?:\\W*?\\b(\\w+?)\\b",
+			"captures": {
+				"1": {
+					"name": "entity.name.variable.use"
+				},
+				"2": {
+					"name": "entity.name.type.use"
+				}
+			}
+		},
+		"function-call": {
+			"comment": "function call",
+			"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.name.function"
+				}
+			},
+			"end": "\\)",
+			"patterns": [
+				{
+					"include": "#function-call"
+				}
+			]
 		},
 		"expressions": {
 			"patterns": [
 				{
 					"comment": "declare",
 					"match": "\\b(declare)\\s*?(\\S+?)\\s*?:\\s*?(\\S+?)\\b",
-				"captures": {"1": {"name":"keyword.control.use"},
-				"3": {"name":"entity.name.type.use"}}
+					"captures": {
+						"1": {
+							"name": "keyword.control.use"
+						},
+						"3": {
+							"name": "entity.name.type.use"
+						}
+					}
 				},
-				{"comment":"class instantiation",
-				"match": "(new)\\s+?([A-Z]\\S*?)\\b",
-				"captures": {"1": {"name":"keyword.control.use"}, "2": {"name":"entity.name.class"}}
+				{
+					"comment": "class instantiation",
+					"match": "(new)\\s+?([A-Z]\\S*?)\\b",
+					"captures": {
+						"1": {
+							"name": "keyword.control.use"
+						},
+						"2": {
+							"name": "entity.name.class"
+						}
+					}
 				},
-				{"comment":"function call",
-				"match": "\\b([_\\-a-z][_\\-a-zA-Z0-9]+?)\\s*?\\(",
-				"captures": {"1": {"name":"entity.name.function"}}
+				{
+					"comment": "function declaration",
+					"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.function"
+						}
+					},
+					"end": "\\)",
+					"patterns": [
+						{
+							"include": "#function-params-declaration"
+						},
+						{
+							"include": "#function-call"
+						}
+					]
 				}
 			]
 		},
 		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.use",
-				"match": "\\b(begin|end|pre|post|between)\\b"
-			},{
-				"name": "keyword.class.use",
-				"match": "\\b(abstract|class|associationclass|enum)\\b"
-			},{
-				"name": "keyword.class.use",
-				"match": "->"
-			},{
-				"name": "variable.other.readwrite",
-				"match": "\\b(self)\\b"
-			},{
-				"name": "variable.other.property.use",
-				"match": "\\b(attributes|operations|constraints|statemachines)\\b"
-			}]
+			"patterns": [
+				{
+					"name": "keyword.control.use",
+					"match": "\\b(begin|end|pre|post|between)\\b"
+				},
+				{
+					"name": "keyword.class.use",
+					"match": "\\b(abstract|class|associationclass|enum)\\b"
+				},
+				{
+					"name": "keyword.class.use",
+					"match": "->"
+				},
+				{
+					"name": "variable.other.readwrite",
+					"match": "\\b(self)\\b"
+				},
+				{
+					"name": "variable.other.property.use",
+					"match": "\\b(attributes|operations|constraints|statemachines)\\b"
+				}
+			]
 		},
 		"comments": {
 			"begin": "--",
 			"end": "$",
 			"name": "comment.line.double-dash.use"
-		  }
+		}
 	},
 	"scopeName": "source.javascript"
 }

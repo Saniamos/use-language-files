@@ -13,22 +13,13 @@
         "languages": [{
             "id": "use",
             "aliases": ["use", "use"],
-            "extensions": [".use"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "soil",
-            "aliases": ["soil", "soil"],
-            "extensions": [".cmd"],
+            "extensions": [".use", ".cmd"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "use",
             "scopeName": "source.javascript",
-            "path": "./syntaxes/use.tmLanguage.json"
-        },{
-            "language": "soil",
-            "scopeName": "source.coffeescript",
-            "path": "./syntaxes/soil.tmLanguage.json"
+            "path": "./syntaxes/tmLanguage.json"
         }]
     }
 }

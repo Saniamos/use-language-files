@@ -9,12 +9,55 @@
 			"include": "#comments"
 		},
 		{
-			"include": "#expressions"
+			"include": "#function-declaration"
 		},
-		{"include": "#function-declaration"}
+		{
+			"include": "#command-line"
+		},
+		{
+			"include": "#expressions-nonnestable"
+		}
 	],
 	"repository": {
-		"types-basic-number": {
+		"types-basic": {
+			"match": "\\b(Integer|String)\\b",
+			"name": "entity.name.type"
+		},
+		"types": {
+			"patterns": [
+				{
+					"include": "#types-basic"
+				},
+				{
+					"match": "\\b[A-Z]\\w+?\\b",
+					"name": "entity.name.type"
+				},
+				{
+					"begin": "\\b(Sequence|Set|Bag|)\\b\\(",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.type"
+						}
+					},
+					"end": "\\)",
+					"patterns": [
+						{
+							"include": "#types"
+						}
+					]
+				}
+			]
+		},
+		"type-declaration": {
+			"begin": ":\\s*?",
+			"end": "\\b[^a-zA-Z0-9_\\r\\n\\t\\f\\v \\)]",
+			"patterns": [
+				{
+					"include": "#types"
+				}
+			]
+		},
+		"value-basic-number": {
 			"patterns": [
 				{
 					"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
@@ -26,7 +69,7 @@
 				}
 			]
 		},
-		"types-basic-string": {
+		"value-basic-string": {
 			"patterns": [
 				{
 					"begin": "'",
@@ -40,62 +83,97 @@
 				}
 			]
 		},
-		"types-basic-enum-entry": {
+		"value-basic-enum-entry": {
 			"name": "variable.other.enummember",
 			"match": "#\\b\\w+?\\b"
 		},
-		"types-collection": {
+		"value-basic-bool": {
+			"name": "constant.language.boolean",
+			"match": "\\b(true|false)\\b"
+		},
+		"value-collection": {
 			"begin": "\\b(Sequence|Set|Bag|)\\b\\{",
 			"beginCaptures": {
-				"1": "entity.name.type"
+				"1": {
+					"name": "entity.name.type"
+				}
 			},
 			"end": "\\}",
 			"patterns": [
 				{
-					"include": "#types"
+					"include": "#values"
 				}
 			]
 		},
-		"types": {
+		"values": {
 			"patterns": [
 				{
-					"include": "#types-basic-number"
+					"include": "#value-basic-number"
 				},
 				{
-					"include": "#types-basic-string"
+					"include": "#value-basic-bool"
 				},
 				{
-					"include": "#types-basic-enum-entry"
+					"include": "#value-basic-string"
 				},
 				{
-					"include": "#types-collection"
+					"include": "#value-basic-enum-entry"
+				},
+				{
+					"include": "#value-collection"
+				}
+			]
+		},
+		"variable-constant": {
+			"name": "variable.other.constant",
+			"match": "\\b[_\\-A-Z0-9]+?\\b"
+		},
+		"variable-normal": {
+			"name": "variable.other.readwrite",
+			"match": "\\b[_\\-a-zA-Z0-9]+?\\b"
+		},
+		"variables": {
+			"patterns": [
+				{
+					"include": "variable-normal"
+				},
+				{
+					"include": "variable-constant"
 				}
 			]
 		},
 		"expressions-nonnestable": {
 			"patterns": [
 				{
-					"include": "#types"
+					"include": "#values"
+				},
+				{
+					"include": "#expressions-nestable"
 				},
 				{
 					"begin": "\\b(\\w+?)\\W*?:=\\W*?",
-					"beginCaptures": {"1": "entity.name.variable.use"},
+					"beginCaptures": {
+						"1": {"name":"variable.parameter"}
+					},
 					"end": "$|;",
 					"patterns": [
-						{"include": "#types"}
+						{
+							"include": "#values"
+						}
 					]
 				},
 				{
 					"comment": "declare",
-					"match": "\\b(declare)\\s*?(\\S+?)\\s*?:\\s*?(\\S+?)\\b",
-					"captures": {
+					"begin": "\\b(declare)\\s*?",
+					"beginCaptures": {
 						"1": {
 							"name": "keyword.control.use"
-						},
-						"3": {
-							"name": "entity.name.type.use"
 						}
-					}
+					},
+					"end":"\\b\\W",
+					"patterns": [
+						{"include": "#type-declaration"}
+					]
 				},
 				{
 					"comment": "class instantiation",
@@ -133,20 +211,9 @@
 				}
 			]
 		},
-		"function-params-declaration": {
-			"match": "\\b(\\w+?)\\b\\W*?:\\W*?\\b(\\w+?)\\b",
-			"captures": {
-				"1": {
-					"name": "entity.name.variable.use"
-				},
-				"2": {
-					"name": "entity.name.type.use"
-				}
-			}
-		},
 		"function-declaration": {
 			"comment": "function declaration",
-			"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+			"begin": "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\(",
 			"beginCaptures": {
 				"1": {
 					"name": "entity.name.function"
@@ -155,7 +222,7 @@
 			"end": "\\)",
 			"patterns": [
 				{
-					"include": "#function-params-declaration"
+					"include": "#type-declaration"
 				}
 			]
 		},
@@ -163,7 +230,11 @@
 			"patterns": [
 				{
 					"name": "keyword.control.use",
-					"match": "\\b(begin|end|pre|post|between)\\b"
+					"match": "\\b(and|or|let|in)\\b"
+				},
+				{
+					"name": "keyword.control.use",
+					"match": "\\b(begin|end|pre|post|between|inv|psm|states|transitions)\\b"
 				},
 				{
 					"name": "keyword.class.use",
@@ -187,6 +258,10 @@
 			"begin": "--",
 			"end": "$",
 			"name": "comment.line.double-dash.use"
+		},
+		"command-line": {
+			"name": "keyword.control.soil",
+			"match": "!\\b\\w+?\\b"
 		}
 	},
 	"scopeName": "source.javascript"

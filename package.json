@@ -6,20 +6,38 @@
     "engines": {
         "vscode": "^1.45.0"
     },
+    "scripts": {
+        "compile": "js-yaml src/tmLanguage.yml > syntaxes/tmLanguage.json",
+        "watch": "onchange -a src/tmLanguage.yml -- npm run compile"
+    },
     "categories": [
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "use",
-            "aliases": ["use", "use"],
-            "extensions": [".use", ".cmd"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "use",
-            "scopeName": "source.javascript",
-            "path": "./syntaxes/tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "use",
+                "aliases": [
+                    "use",
+                    "use"
+                ],
+                "extensions": [
+                    ".use",
+                    ".cmd"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "use",
+                "scopeName": "source.javascript",
+                "path": "./syntaxes/tmLanguage.json"
+            }
+        ]
+    },
+    "devDependencies": {
+        "js-yaml": "^3.13.1",
+        "onchange": "^7.0.2"
     }
 }

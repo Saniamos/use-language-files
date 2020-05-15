@@ -1,268 +1,325 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "use",
-	"patterns": [
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#comments"
-		},
-		{
-			"include": "#function-declaration"
-		},
-		{
-			"include": "#command-line"
-		},
-		{
-			"include": "#expressions-nonnestable"
-		}
-	],
-	"repository": {
-		"types-basic": {
-			"match": "\\b(Integer|String)\\b",
-			"name": "entity.name.type"
-		},
-		"types": {
-			"patterns": [
-				{
-					"include": "#types-basic"
-				},
-				{
-					"match": "\\b[A-Z]\\w+?\\b",
-					"name": "entity.name.type"
-				},
-				{
-					"begin": "\\b(Sequence|Set|Bag|)\\b\\(",
-					"beginCaptures": {
-						"1": {
-							"name": "entity.name.type"
-						}
-					},
-					"end": "\\)",
-					"patterns": [
-						{
-							"include": "#types"
-						}
-					]
-				}
-			]
-		},
-		"type-declaration": {
-			"begin": ":\\s*?",
-			"end": "\\b[^a-zA-Z0-9_\\r\\n\\t\\f\\v \\)]",
-			"patterns": [
-				{
-					"include": "#types"
-				}
-			]
-		},
-		"value-basic-number": {
-			"patterns": [
-				{
-					"match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
-					"name": "constant.numeric.float.use"
-				},
-				{
-					"match": "\\b([0-9]+)\\b",
-					"name": "constant.numeric.integer.use"
-				}
-			]
-		},
-		"value-basic-string": {
-			"patterns": [
-				{
-					"begin": "'",
-					"end": "'",
-					"name": "string.quoted.single.use"
-				},
-				{
-					"begin": "\"",
-					"end": "\"",
-					"name": "string.quoted.double.use"
-				}
-			]
-		},
-		"value-basic-enum-entry": {
-			"name": "variable.other.enummember",
-			"match": "#\\b\\w+?\\b"
-		},
-		"value-basic-bool": {
-			"name": "constant.language.boolean",
-			"match": "\\b(true|false)\\b"
-		},
-		"value-collection": {
-			"begin": "\\b(Sequence|Set|Bag|)\\b\\{",
-			"beginCaptures": {
-				"1": {
-					"name": "entity.name.type"
-				}
-			},
-			"end": "\\}",
-			"patterns": [
-				{
-					"include": "#values"
-				}
-			]
-		},
-		"values": {
-			"patterns": [
-				{
-					"include": "#value-basic-number"
-				},
-				{
-					"include": "#value-basic-bool"
-				},
-				{
-					"include": "#value-basic-string"
-				},
-				{
-					"include": "#value-basic-enum-entry"
-				},
-				{
-					"include": "#value-collection"
-				}
-			]
-		},
-		"variable-constant": {
-			"name": "variable.other.constant",
-			"match": "\\b[_\\-A-Z0-9]+?\\b"
-		},
-		"variable-normal": {
-			"name": "variable.other.readwrite",
-			"match": "\\b[_\\-a-zA-Z0-9]+?\\b"
-		},
-		"variables": {
-			"patterns": [
-				{
-					"include": "variable-normal"
-				},
-				{
-					"include": "variable-constant"
-				}
-			]
-		},
-		"expressions-nonnestable": {
-			"patterns": [
-				{
-					"include": "#values"
-				},
-				{
-					"include": "#expressions-nestable"
-				},
-				{
-					"begin": "\\b(\\w+?)\\W*?:=\\W*?",
-					"beginCaptures": {
-						"1": {"name":"variable.parameter"}
-					},
-					"end": "$|;",
-					"patterns": [
-						{
-							"include": "#values"
-						}
-					]
-				},
-				{
-					"comment": "declare",
-					"begin": "\\b(declare)\\s*?",
-					"beginCaptures": {
-						"1": {
-							"name": "keyword.control.use"
-						}
-					},
-					"end":"\\b\\W",
-					"patterns": [
-						{"include": "#type-declaration"}
-					]
-				},
-				{
-					"comment": "class instantiation",
-					"match": "(new)\\s+?([A-Z]\\S*?)\\b",
-					"captures": {
-						"1": {
-							"name": "keyword.control.use"
-						},
-						"2": {
-							"name": "entity.name.class"
-						}
-					}
-				}
-			]
-		},
-		"expressions-nestable": {
-			"patterns": [
-				{
-					"comment": "function call",
-					"begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
-					"beginCaptures": {
-						"1": {
-							"name": "entity.name.function"
-						}
-					},
-					"end": "\\)",
-					"patterns": [
-						{
-							"include": "#expressions-nestable"
-						},
-						{
-							"include": "#expressions-nonnestable"
-						}
-					]
-				}
-			]
-		},
-		"function-declaration": {
-			"comment": "function declaration",
-			"begin": "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\(",
-			"beginCaptures": {
-				"1": {
-					"name": "entity.name.function"
-				}
-			},
-			"end": "\\)",
-			"patterns": [
-				{
-					"include": "#type-declaration"
-				}
-			]
-		},
-		"keywords": {
-			"patterns": [
-				{
-					"name": "keyword.control.use",
-					"match": "\\b(and|or|let|in)\\b"
-				},
-				{
-					"name": "keyword.control.use",
-					"match": "\\b(begin|end|pre|post|between|inv|psm|states|transitions)\\b"
-				},
-				{
-					"name": "keyword.class.use",
-					"match": "\\b(abstract|class|associationclass|enum)\\b"
-				},
-				{
-					"name": "keyword.class.use",
-					"match": "->"
-				},
-				{
-					"name": "variable.other.readwrite",
-					"match": "\\b(self)\\b"
-				},
-				{
-					"name": "variable.other.property.use",
-					"match": "\\b(attributes|operations|constraints|statemachines)\\b"
-				}
-			]
-		},
-		"comments": {
-			"begin": "--",
-			"end": "$",
-			"name": "comment.line.double-dash.use"
-		},
-		"command-line": {
-			"name": "keyword.control.soil",
-			"match": "!\\b\\w+?\\b"
-		}
-	},
-	"scopeName": "source.javascript"
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "scopeName": "source.javascript",
+  "name": "use",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#function-declaration"
+    },
+    {
+      "include": "#command-line"
+    },
+    {
+      "include": "#expressions-nonnestable"
+    }
+  ],
+  "repository": {
+    "types-basic": {
+      "match": "\\b(Integer|String)\\b",
+      "name": "entity.name.type"
+    },
+    "types": {
+      "patterns": [
+        {
+          "include": "#types-basic"
+        },
+        {
+          "match": "\\b[A-Z]\\w+?\\b",
+          "name": "entity.name.type"
+        },
+        {
+          "begin": "\\b(Sequence|Set|Bag|)\\b\\(",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.type"
+            }
+          },
+          "end": "\\)",
+          "patterns": [
+            {
+              "include": "#types"
+            }
+          ]
+        }
+      ]
+    },
+    "type-declaration": {
+      "begin": ":\\s*?",
+      "end": "\\b[^a-zA-Z0-9_\\r\\n\\t\\f\\v \\)]",
+      "patterns": [
+        {
+          "include": "#types"
+        }
+      ]
+    },
+    "value-basic-number": {
+      "patterns": [
+        {
+          "match": "\\b([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\\b",
+          "name": "constant.numeric.float.use"
+        },
+        {
+          "match": "\\b([0-9]+)\\b",
+          "name": "constant.numeric.integer.use"
+        }
+      ]
+    },
+    "value-basic-string": {
+      "patterns": [
+        {
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.use"
+        },
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.use"
+        }
+      ]
+    },
+    "value-basic-enum-entry": {
+      "name": "variable.other.enummember",
+      "match": "#\\b\\w+?\\b"
+    },
+    "value-basic-bool": {
+      "name": "constant.language.boolean",
+      "match": "\\b(true|false)\\b"
+    },
+    "value-collection": {
+      "begin": "\\b(Sequence|Set|Bag|)\\b\\{",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.type"
+        }
+      },
+      "end": "\\}",
+      "patterns": [
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        {
+          "include": "#value-basic-number"
+        },
+        {
+          "include": "#value-basic-bool"
+        },
+        {
+          "include": "#value-basic-string"
+        },
+        {
+          "include": "#value-basic-enum-entry"
+        },
+        {
+          "include": "#value-collection"
+        }
+      ]
+    },
+    "variable-constant": {
+      "name": "variable.other.constant",
+      "match": "\\b[_\\-A-Z0-9]+?\\b"
+    },
+    "variable-normal": {
+      "name": "variable.other.readwrite",
+      "match": "\\b[_\\-a-zA-Z0-9]+?\\b"
+    },
+    "variables": {
+      "patterns": [
+        {
+          "include": "variable-normal"
+        },
+        {
+          "include": "variable-constant"
+        }
+      ]
+    },
+    "expressions-nonnestable": {
+      "patterns": [
+        {
+          "include": "#values"
+        },
+        {
+          "include": "#expressions-nestable"
+        },
+        {
+          "begin": "\\b(\\w+?)\\W*?:=\\W*?",
+          "beginCaptures": {
+            "1": {
+              "name": "variable.parameter"
+            }
+          },
+          "end": "$|;",
+          "patterns": [
+            {
+              "include": "#values"
+            }
+          ]
+        },
+        {
+          "comment": "declare",
+          "begin": "\\b(declare)\\s*?",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.use"
+            }
+          },
+          "end": "\\b\\W",
+          "patterns": [
+            {
+              "include": "#type-declaration"
+            }
+          ]
+        },
+        {
+          "comment": "class instantiation",
+          "match": "(new)\\s+?([A-Z]\\S*?)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.control.use"
+            },
+            "2": {
+              "name": "entity.name.class"
+            }
+          }
+        }
+      ]
+    },
+    "expressions-nestable": {
+      "patterns": [
+        {
+          "comment": "function call",
+          "begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.function"
+            }
+          },
+          "end": "\\)",
+          "patterns": [
+            {
+              "include": "#expressions-nestable"
+            },
+            {
+              "include": "#expressions-nonnestable"
+            }
+          ]
+        },
+        {
+          "comment": "let in",
+          "begin": "\\b(let)\\s+?(\\w+?)\\s*?=(.*?)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.use"
+            },
+            "2": {
+              "name": "variable.other.readwrite"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#expression-nestable"
+                }
+              ]
+            }
+          },
+          "end": "\\b(in)\\s+?(.*?)",
+          "endCaptures": {
+            "1": {
+              "name": "keyword.control.use"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#expression-nestable"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "function-declaration": {
+      "comment": "function declaration",
+      "begin": "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\(",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function"
+        }
+      },
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "#type-declaration"
+        }
+      ]
+    },
+    "keyword-control": {
+      "name": "keyword.control.use",
+      "match": "\\b(create|set)\\b"
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "include": "#keyword-control"
+        },
+        {
+          "name": "keyword.control.use",
+          "match": "\\b(and|or)\\b"
+        },
+        {
+          "name": "keyword.control.use",
+          "match": "\\b(begin|end|pre|post|between|inv|psm|states|transitions)\\b"
+        },
+        {
+          "name": "keyword.class.use",
+          "match": "\\b(abstract|class|associationclass|enum)\\b"
+        },
+        {
+          "name": "keyword.class.use",
+          "match": "->"
+        },
+        {
+          "name": "variable.other.readwrite",
+          "match": "\\b(self)\\b"
+        },
+        {
+          "name": "variable.other.property.use",
+          "match": "\\b(attributes|operations|constraints|statemachines)\\b"
+        }
+      ]
+    },
+    "comments": {
+      "begin": "--",
+      "end": "$",
+      "name": "comment.line.double-dash.use"
+    },
+    "command-line": {
+      "match": "(!)\\b(\\w*?)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.soil"
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#keyword-control"
+            },
+            {
+              "include": "#variables"
+            }
+          ]
+        }
+      }
+    }
+  }
 }

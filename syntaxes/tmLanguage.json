@@ -4,9 +4,6 @@
   "name": "use",
   "patterns": [
     {
-      "include": "#keywords"
-    },
-    {
       "include": "#comments"
     },
     {
@@ -136,10 +133,10 @@
     "variables": {
       "patterns": [
         {
-          "include": "variable-normal"
+          "include": "#variable-normal"
         },
         {
-          "include": "variable-constant"
+          "include": "#variable-constant"
         }
       ]
     },
@@ -179,6 +176,16 @@
               ]
             }
           }
+        }
+      ]
+    },
+    "expressions-nestable": {
+      "patterns": [
+        {
+          "include": "#values"
+        },
+        {
+          "include": "#keywords"
         },
         {
           "comment": "class instantiation",
@@ -206,11 +213,14 @@
               "patterns": [
                 {
                   "include": "#expressions-nestable"
+                },
+                {
+                  "include": "#variables"
                 }
               ]
             }
           },
-          "end": "\\b(in)\\s+?(.*?)",
+          "end": "\\b(in)\\b\\s+?(.*)",
           "endCaptures": {
             "1": {
               "name": "keyword.control.use"
@@ -219,17 +229,13 @@
               "patterns": [
                 {
                   "include": "#expressions-nestable"
+                },
+                {
+                  "include": "#variables"
                 }
               ]
             }
           }
-        }
-      ]
-    },
-    "expressions-nestable": {
-      "patterns": [
-        {
-          "include": "#values"
         },
         {
           "comment": "function call",

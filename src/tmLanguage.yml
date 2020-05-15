@@ -3,7 +3,6 @@
   scopeName: source.javascript
   name: use
   patterns:
-    - include: "#keywords"
     - include: "#comments"
     - include: "#function-declaration"
     - include: "#command-line"
@@ -78,8 +77,8 @@
       match: "\\b[_\\-a-zA-Z0-9]+?\\b"
     variables:
       patterns:
-      - include: variable-normal
-      - include: variable-constant
+      - include: "#variable-normal"
+      - include: "#variable-constant"
 
     #expressions
     expressions:
@@ -104,6 +103,12 @@
             patterns:
             - include: "#type-declaration"
 
+      # these are the ones containing other expressions
+    expressions-nestable:
+      patterns:
+      - include: "#values"
+      - include: "#keywords"
+
       - comment: class instantiation
         match: "(new)\\s+?([A-Z]\\S*?)\\b"
         captures:
@@ -122,19 +127,15 @@
           '3':
             patterns:
               - include: "#expressions-nestable"
-        end: "\\b(in)\\s+?(.*?)"
+              - include: "#variables"
+        end: "\\b(in)\\b\\s+?(.*)"
         endCaptures:
           '1':
             name: keyword.control.use
           '2':
             patterns:
               - include: "#expressions-nestable"
-
-
-      # these are the ones containing other expressions
-    expressions-nestable:
-      patterns:
-      - include: "#values"
+              - include: "#variables"
 
       - comment: function call
         begin: "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\("

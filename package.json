@@ -13,6 +13,10 @@
     "categories": [
         "Programming Languages"
     ],
+    "activationEvents": [
+        "onLanguage:use"
+    ],
+    "main": "./src/formatter",
     "contributes": {
         "languages": [
             {

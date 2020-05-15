@@ -16,7 +16,7 @@
       "include": "#command-line"
     },
     {
-      "include": "#expressions-nonnestable"
+      "include": "#expressions"
     }
   ],
   "repository": {
@@ -143,42 +143,42 @@
         }
       ]
     },
-    "expressions-nonnestable": {
+    "expressions": {
       "patterns": [
-        {
-          "include": "#values"
-        },
         {
           "include": "#expressions-nestable"
         },
         {
-          "begin": "\\b(\\w+?)\\W*?:=\\W*?",
-          "beginCaptures": {
+          "comment": "assignment",
+          "match": "\\b(\\w+?)\\s*?:=\\s*?(.*)($|;)",
+          "captures": {
             "1": {
               "name": "variable.parameter"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#expressions-nestable"
+                }
+              ]
             }
-          },
-          "end": "$|;",
-          "patterns": [
-            {
-              "include": "#values"
-            }
-          ]
+          }
         },
         {
           "comment": "declare",
-          "begin": "\\b(declare)\\s*?",
-          "beginCaptures": {
+          "match": "\\b(declare)\\s+?(.*)($|;)",
+          "captures": {
             "1": {
               "name": "keyword.control.use"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#type-declaration"
+                }
+              ]
             }
-          },
-          "end": "\\b\\W",
-          "patterns": [
-            {
-              "include": "#type-declaration"
-            }
-          ]
+          }
         },
         {
           "comment": "class instantiation",
@@ -191,32 +191,10 @@
               "name": "entity.name.class"
             }
           }
-        }
-      ]
-    },
-    "expressions-nestable": {
-      "patterns": [
-        {
-          "comment": "function call",
-          "begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
-          "beginCaptures": {
-            "1": {
-              "name": "entity.name.function"
-            }
-          },
-          "end": "\\)",
-          "patterns": [
-            {
-              "include": "#expressions-nestable"
-            },
-            {
-              "include": "#expressions-nonnestable"
-            }
-          ]
         },
         {
           "comment": "let in",
-          "begin": "\\b(let)\\s+?(\\w+?)\\s*?=(.*?)",
+          "begin": "\\b(let)\\s+?(\\w+?)\\s*?=(.*)",
           "beginCaptures": {
             "1": {
               "name": "keyword.control.use"
@@ -227,7 +205,7 @@
             "3": {
               "patterns": [
                 {
-                  "include": "#expression-nestable"
+                  "include": "#expressions-nestable"
                 }
               ]
             }
@@ -240,7 +218,7 @@
             "2": {
               "patterns": [
                 {
-                  "include": "#expression-nestable"
+                  "include": "#expressions-nestable"
                 }
               ]
             }
@@ -248,20 +226,43 @@
         }
       ]
     },
-    "function-declaration": {
-      "comment": "function declaration",
-      "begin": "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\(",
-      "beginCaptures": {
-        "1": {
-          "name": "entity.name.function"
-        }
-      },
-      "end": "\\)",
+    "expressions-nestable": {
       "patterns": [
         {
-          "include": "#type-declaration"
+          "include": "#values"
+        },
+        {
+          "comment": "function call",
+          "begin": "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\(",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.function"
+            }
+          },
+          "end": "\\)",
+          "patterns": [
+            {
+              "include": "#expressions-nestable"
+            }
+          ]
         }
       ]
+    },
+    "function-declaration": {
+      "comment": "function declaration",
+      "match": "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\((.*)\\)\\s*?$",
+      "captures": {
+        "1": {
+          "name": "entity.name.function"
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#type-declaration"
+            }
+          ]
+        }
+      }
     },
     "keyword-control": {
       "name": "keyword.control.use",

@@ -7,7 +7,7 @@
     - include: "#comments"
     - include: "#function-declaration"
     - include: "#command-line"
-    - include: "#expressions-nonnestable"
+    - include: "#expressions"
 
   repository:
     # types
@@ -82,25 +82,28 @@
       - include: variable-constant
 
     #expressions
-    expressions-nonnestable:
+    expressions:
       patterns:
-      - include: "#values"
       - include: "#expressions-nestable"
-      - begin: "\\b(\\w+?)\\W*?:=\\W*?"
-        beginCaptures:
+
+      - comment: assignment
+        match: "\\b(\\w+?)\\s*?:=\\s*?(.*)($|;)"
+        captures:
           '1':
             name: variable.parameter
-        end: "$|;"
-        patterns:
-        - include: "#values"
+          '2':
+            patterns:
+            - include: "#expressions-nestable"
+
       - comment: declare
-        begin: "\\b(declare)\\s*?"
-        beginCaptures:
+        match: "\\b(declare)\\s+?(.*)($|;)"
+        captures:
           '1':
             name: keyword.control.use
-        end: "\\b\\W"
-        patterns:
-        - include: "#type-declaration"
+          '2':
+            patterns:
+            - include: "#type-declaration"
+
       - comment: class instantiation
         match: "(new)\\s+?([A-Z]\\S*?)\\b"
         captures:
@@ -108,8 +111,31 @@
             name: keyword.control.use
           '2':
             name: entity.name.class
+
+      - comment: let in
+        begin: "\\b(let)\\s+?(\\w+?)\\s*?=(.*)"
+        beginCaptures:
+          '1':
+            name: keyword.control.use
+          '2':
+            name: variable.other.readwrite
+          '3':
+            patterns:
+              - include: "#expressions-nestable"
+        end: "\\b(in)\\s+?(.*?)"
+        endCaptures:
+          '1':
+            name: keyword.control.use
+          '2':
+            patterns:
+              - include: "#expressions-nestable"
+
+
+      # these are the ones containing other expressions
     expressions-nestable:
       patterns:
+      - include: "#values"
+
       - comment: function call
         begin: "\\b([_\\-a-zA-Z0-9]+?)\\s*?\\("
         beginCaptures:
@@ -118,33 +144,18 @@
         end: "\\)"
         patterns:
         - include: "#expressions-nestable"
-        - include: "#expressions-nonnestable"
-      - comment: let in
-        begin: "\\b(let)\\s+?(\\w+?)\\s*?=(.*?)"
-        beginCaptures:
-          '1':
-            name: keyword.control.use
-          '2':
-            name: variable.other.readwrite
-          '3':
-            patterns:
-              - include: "#expression-nestable"
-        end: "\\b(in)\\s+?(.*?)"
-        endCaptures:
-          '1':
-            name: keyword.control.use
-          '2':
-            patterns:
-              - include: "#expression-nestable"
+
     function-declaration:
       comment: function declaration
-      begin: "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\("
-      beginCaptures:
+      #todo: we should define the function body as well, but it does not have a single end delimiter :/
+      match: "\\b([_\\-a-zA-Z0-9]+?)\\b\\W*?\\((.*)\\)\\s*?$"
+      captures:
         '1':
           name: entity.name.function
-      end: "\\)"
-      patterns:
-      - include: "#type-declaration"
+        '2':
+          patterns:
+            - include: "#type-declaration"
+
 
     # keywords
     keyword-control:

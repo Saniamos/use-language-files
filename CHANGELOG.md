@@ -9,3 +9,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Initial release
     - basic highlighting using the js scope
     - only one formatting rule (breathing for =, :=, ->)
+
+## [0.0.2]
+
+- changed SOIL language file extension

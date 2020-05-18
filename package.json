@@ -32,7 +32,7 @@
                 ],
                 "extensions": [
                     ".use",
-                    ".cmd"
+                    ".soil"
                 ],
                 "configuration": "./language-configuration.json"
             }

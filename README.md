@@ -8,12 +8,16 @@ This package aims to add minimalistic support for use and soil files in context 
 ## Features
 
 - Syntax Highlighting for `.use` and `.soil` files
+- Comment & Uncomment
 - Primitive Formatter
 
 ### Syntax Highlighting
 The package adds a simple language grammar which uses the JS syntax scope for highlighting.
 
 \!\[Highlighting\]\(imgs/highlighting_example.png\)
+
+### Comment
+The language grammar also adds ctrl+/ commenting and uncommenting for free.
 
 ### Auto-formatter
 The package adds a primitive formatter.

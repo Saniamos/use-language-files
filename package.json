@@ -6,6 +6,7 @@
     "engines": {
         "vscode": "^1.45.0"
     },
+    "publisher": "saniamos",
     "scripts": {
         "compile": "js-yaml src/tmLanguage.yml > syntaxes/tmLanguage.json",
         "watch": "onchange -a src/tmLanguage.yml -- npm run compile"

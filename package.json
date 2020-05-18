@@ -2,7 +2,7 @@
     "name": "use-lang",
     "displayName": "use-lang",
     "description": "Language Support for USE (Uni Bremen)",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "engines": {
         "vscode": "^1.45.0"
     },

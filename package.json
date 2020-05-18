@@ -11,6 +11,10 @@
         "compile": "js-yaml src/tmLanguage.yml > syntaxes/tmLanguage.json",
         "watch": "onchange -a src/tmLanguage.yml -- npm run compile"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Saniamos/use-language-files"
+    },
     "categories": [
         "Programming Languages"
     ],

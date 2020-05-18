@@ -14,7 +14,7 @@ This package aims to add minimalistic support for use and soil files in context 
 ### Syntax Highlighting
 The package adds a simple language grammar which uses the JS syntax scope for highlighting.
 
-\!\[Highlighting\]\(imgs/highlighting_example.png\)
+![Highlighting](imgs/highlighting_example.png)
 
 ### Comment
 The language grammar also adds ctrl+/ commenting and uncommenting for free.
